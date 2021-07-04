@@ -1,0 +1,17 @@
+version: '3.7'
+services:
+  localization_db:
+    image: 'postgres' # use latest official postgres version
+    container_name: localization_db
+    ports:
+      - 5432:5432
+    env_file:
+      - docker/db/database.env # configure postgres
+    volumes:
+      - pg_db:/var/lib/postgresql/data/ # persist data even if container shuts down
+    networks:
+      - localization
+volumes:
+  pg_db: # named volumes can be managed easier using docker-compose
+networks:
+  localization:
