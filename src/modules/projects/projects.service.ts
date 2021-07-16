@@ -6,7 +6,7 @@ import {
 } from '@modules/projects/repositories';
 import { CreateProjectDto } from '@modules/projects/dtos';
 import { ProjectProperties } from '@modules/projects/entities/project-properties.entity';
-import { QueryRunner } from 'typeorm';
+import { QueryRunner, SelectQueryBuilder } from 'typeorm';
 import { TeamsService } from '@modules/teams/teams.service';
 import { Team } from '@modules/teams/entities/team.entity';
 import { CreateTeamDto } from '@modules/teams/dtos';
@@ -31,8 +31,19 @@ export class ProjectsService {
       .getMany();
   }
 
-  async findById({ id }: Pick<Project, 'id'>): Promise<Project> {
-    return this.projectsRepository.findOne({ where: { id } });
+  async findById(
+    { id }: Pick<Project, 'id'>,
+    detailed = false,
+  ): Promise<Project> {
+    const qb: SelectQueryBuilder<Project> = this.projectsRepository
+      .createQueryBuilder('p')
+      .where('p.id = :id', { id });
+
+    if (detailed) {
+      qb.leftJoinAndMapMany('p.teams', Team, 'team', 'team.project_id = p.id');
+    }
+
+    return qb.getOne();
   }
 
   async createProject(createProjectDto: CreateProjectDto): Promise<Project> {

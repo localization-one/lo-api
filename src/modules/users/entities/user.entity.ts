@@ -6,7 +6,7 @@ import { UserRole } from '@modules/users/entities/user-role.entity';
 
 @Entity({ name: 'users', schema: SCHEMAS.USERS })
 export class User extends BaseEntity {
-  @TextColumn()
+  @TextColumn({unique: true})
   email: string;
 
   @TextColumn()

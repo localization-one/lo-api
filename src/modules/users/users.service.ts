@@ -31,6 +31,13 @@ export class UsersService {
     return qb.getMany();
   }
 
+  async findByEmail({ email }: Pick<User, 'email'>): Promise<User> {
+    const qb: SelectQueryBuilder<User> = this.usersRepository
+      .createQueryBuilder('u')
+      .where('u.email = :email', { email });
+    return qb.getOne();
+  }
+
   async createUser(userDto: CreateUserDto): Promise<User> {
     const qr: QueryRunner = await this.usersRepository.startTransaction();
 

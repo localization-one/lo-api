@@ -18,6 +18,12 @@ export class ProjectsController {
     return this.projectsService.getAllProjects();
   }
 
+  @Get(':project_id')
+  @ApiParam({ name: 'project_id', required: true })
+  async getProjectById(@Param('project_id') project_id: ID): Promise<Project> {
+    return this.projectsService.findById({ id: project_id }, true);
+  }
+
   @Post()
   async createProject(
     @Body()
